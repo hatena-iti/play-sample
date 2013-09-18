@@ -1,7 +1,23 @@
-@(message: String)
+@(posts: List[Post], taskForm: Form[(String, String)])
 
-@main("Welcome to Play 2.1") {
-    
-    @play20.welcome(message)
-    
+@import helper._
+
+@main("Listing posts") {
+
+    <h1>Listing posts</h1>
+
+    <table>
+    @posts.map { post =>
+        <tr>
+            <td><a href="@routes.Application.showPost(post.id)">@post.title</a></td>
+            <td>
+            @form(routes.Application.deletePost(post.id)) {
+                <input type="submit" value="Delete">
+            }
+            </td>
+        </tr>
+    }
+    </table>
+
+    <a href="@routes.Application.showNewPost">New Post</a>
 }

@@ -1,0 +1,20 @@
+@(postForm: Form[(String, String)])
+
+@import helper._
+
+@main("New Post") {
+
+    <h1>Add a new Post</h1>
+
+    @form(routes.Application.newPost) {
+
+        @inputText(postForm("title"))
+        @inputText(postForm("text"))
+
+        <input type="submit" value="Create">
+
+    }
+
+    <a href="@routes.Application.posts()">Post List</a>
+
+}

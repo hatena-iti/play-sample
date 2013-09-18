@@ -1,0 +1,10 @@
+@(post: Post)
+
+@import helper._
+
+@main(post.title) {
+    <p><strong>Title:</strong> @post.title</p>
+    <p><strong>Text:</strong> @post.text</p>
+
+    <a href="@routes.Application.posts()">Post List</a>
+}
