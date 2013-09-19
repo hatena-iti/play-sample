@@ -20,21 +20,21 @@ object Application extends Controller {
   }
 
   def posts = Action {
-    Ok(views.html.index(Posts.all(), taskForm))
+    Ok(views.html.index(Posts.all()))
+  }
+
+  def showNewPost = Action {
+    Ok(views.html.newPost(postForm))
   }
 
   def newPost = Action { implicit request =>
-    taskForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.index(Posts.all(), errors)),
+    postForm.bindFromRequest.fold(
+      errors => BadRequest(views.html.newPost(errors)),
       form => {
         Posts.create(form._1, form._2)
         Redirect(routes.Application.posts())
       }
     )
-  }
-
-  def showNewPost = Action {
-    Ok(views.html.newPost(taskForm))
   }
 
   def deletePost(id: Long) = Action {
@@ -46,7 +46,7 @@ object Application extends Controller {
     Ok(views.html.post(Posts(id)))
   }
 
-  val taskForm = Form(
+  val postForm = Form(
     tuple(
       "title" -> nonEmptyText,
       "text" -> nonEmptyText

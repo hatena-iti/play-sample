@@ -14,6 +14,7 @@ package models
  */
 import play.api.db.slick.Config.driver.simple._
 import play.api.Play.current
+import play.api.db.slick._
 
 case class Post(id: Long, title: String, text: String)
 
@@ -24,27 +25,19 @@ object Posts extends Table[Post]("post") {
   def * = id ~ title ~ text <> (Post, Post.unapply _)
   def ins = title ~ text returning id
 
-  def withSession[T](f: Session => T): T = {
-    play.api.db.slick.DB.withSession{ implicit session:Session =>
-      f(session)
-    }
+  def all() = DB.withSession{ implicit session:Session =>
+    Query(Posts).sortBy(_.id).list
   }
 
-  def all() = {
-    play.api.db.slick.DB.withSession{ implicit session:Session =>
-      Query(Posts).sortBy(_.id).list
-    }
-  }
-
-  def create(title: String, text: String) = withSession { implicit session: Session =>
+  def create(title: String, text: String) = DB.withSession { implicit session: Session =>
     Posts.ins.insert(title, text)
   }
 
-  def delete(id: Long) = withSession { implicit session: Session =>
+  def delete(id: Long) = DB.withSession { implicit session: Session =>
     Posts.where(_.id === id).delete
   }
 
-  def apply(id: Long): Post = withSession { implicit session: Session =>
+  def apply(id: Long): Post = DB.withSession { implicit session: Session =>
     Query(Posts).where(_.id === id).list.head
   }
 }
